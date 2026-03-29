@@ -15,8 +15,8 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-from langchain.schema import Document
-from langchain_community.vectorstores import Chroma
+from langchain_core.documents import Document
+from langchain_chroma import Chroma
 from rank_bm25 import BM25Okapi
 
 from config import (
