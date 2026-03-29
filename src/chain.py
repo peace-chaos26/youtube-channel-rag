@@ -15,9 +15,9 @@ import logging
 from typing import Optional
 
 from langchain_openai import ChatOpenAI
-from langchain.schema import Document
-from langchain.prompts import PromptTemplate
-from langchain.chains.summarize import load_summarize_chain
+from langchain_core.documents import Document
+from langchain_core.prompts import PromptTemplate
+# from langchain_community.chains.summarize import load_summarize_chain
 
 from config import LLM_MODEL, LLM_TEMPERATURE, MAX_TOKENS, TOP_K
 from retriever import HybridRetriever
@@ -168,52 +168,34 @@ class QAChain:
 class SummarizeChain:
     """
     Summarises all content about a topic across multiple videos.
-
-    Why Map-Reduce and not a single LLM call?
-    If a topic appears across 20 videos with 5 chunks each = 100 chunks.
-    100 chunks * ~400 tokens = 40,000 tokens of context.
-    This exceeds most LLM context windows and is expensive.
-
-    Map-Reduce solves this:
-      Map    — summarise each chunk independently (parallel, cheap)
-      Reduce — synthesise all summaries into one final answer (single call)
-
-    Each step stays well within context limits.
+    Implements Map-Reduce manually:
+      Map    — summarise each chunk independently
+      Reduce — synthesise all summaries into one final answer
     """
 
-    def __init__(self, retriever: Optional[HybridRetriever] = None):
+    def __init__(self, retriever=None):
         self.retriever = retriever or HybridRetriever()
         self.llm = get_llm()
 
-        # LangChain's built-in map_reduce summarization chain
-        self.chain = load_summarize_chain(
-            llm=self.llm,
-            chain_type="map_reduce",
-            map_prompt=MAP_PROMPT,
-            combine_prompt=REDUCE_PROMPT,
-            verbose=False,
-        )
+    def _map(self, doc: Document) -> str:
+        """Summarise a single chunk."""
+        prompt = MAP_PROMPT.format(text=doc.page_content)
+        response = self.llm.invoke(prompt)
+        return response.content
+
+    def _reduce(self, summaries: list[str]) -> str:
+        """Synthesise all chunk summaries into a final answer."""
+        combined = "\n\n---\n\n".join(summaries)
+        prompt = REDUCE_PROMPT.format(text=combined)
+        response = self.llm.invoke(prompt)
+        return response.content
 
     def run(
         self,
         topic: str,
-        k: int = 20,               # retrieve more chunks for summarisation
+        k: int = 20,
         filter_video_id: Optional[str] = None,
     ) -> dict:
-        """
-        Args:
-            topic: the subject to summarise (e.g. "backpropagation")
-            k: number of chunks to retrieve — higher than QA since
-               we want broad coverage, not just the top few
-
-        Returns:
-            {
-                "summary": str,
-                "sources": list[Document],
-                "video_count": int,   # how many distinct videos were covered
-            }
-        """
-        # Step 1: retrieve broadly
         docs = self.retriever.retrieve(
             query=topic,
             k=k,
@@ -227,14 +209,19 @@ class SummarizeChain:
                 "video_count": 0,
             }
 
-        # Step 2: Map-Reduce over retrieved chunks
-        result = self.chain.invoke({"input_documents": docs})
+        # Map step — summarise each chunk independently
+        summaries = []
+        for doc in docs:
+            summary = self._map(doc)
+            summaries.append(summary)
 
-        # Count distinct videos covered
+        # Reduce step — synthesise all summaries
+        final_summary = self._reduce(summaries)
+
         video_ids = {doc.metadata.get("video_id") for doc in docs}
 
         return {
-            "summary": result["output_text"],
+            "summary": final_summary,
             "sources": docs,
             "video_count": len(video_ids),
         }
