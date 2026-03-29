@@ -13,8 +13,8 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-from langchain.schema import Document
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_core.documents import Document
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from config import (
     CHUNK_SIZE,
@@ -132,6 +132,12 @@ def chunk_video(transcript_path: Path) -> list[Document]:
 
         # Skip noise chunks
         if len(chunk_text.strip()) < MIN_CHUNK_LENGTH:
+            continue
+        
+        noise_tokens = ["[Music]", "[Applause]", "[Laughter]", "[music]"]
+        noise_count = sum(chunk_text.count(token) for token in noise_tokens)
+        word_count = len(chunk_text.split())
+        if word_count > 0 and noise_count / word_count > 0.3:
             continue
 
         # Find where this chunk sits in the full_text

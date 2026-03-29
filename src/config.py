@@ -27,7 +27,7 @@ MAX_VIDEOS = None                              # None = ingest entire channel
 
 CHUNK_SIZE = 512          # tokens per chunk
 CHUNK_OVERLAP = 64        # overlap between consecutive chunks
-MIN_CHUNK_LENGTH = 50     # discard chunks shorter than this (noise filter)
+MIN_CHUNK_LENGTH = 100     # discard chunks shorter than this (noise filter)
 
 
 # ── Embeddings ───────────────────────────────────────────────────────────────
