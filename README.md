@@ -1,8 +1,7 @@
 # 🧠 YouTube Channel RAG
 
-> Turn any YouTube channel into a searchable knowledge base.
-> Ask questions across hundreds of videos — every answer links back
-> to the exact moment in the video.
+> Turn **any** YouTube channel into a searchable knowledge base.
+> Paste a channel URL — ask questions across all videos in minutes.
 
 ![Demo](assets/demo.gif)
 
