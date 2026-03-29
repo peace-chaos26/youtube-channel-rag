@@ -19,7 +19,7 @@ EVAL_DIR = Path("eval_data")
 # ── Channel ──────────────────────────────────────────────────────────────────
 
 CHANNEL_HANDLE = "@AndrejKarpathy"             # YouTube handle
-CHANNEL_ID = "UCbmNph6atAoGfqLoCL_duAg"       # Karpathy's channel ID (stable)
+CHANNEL_ID = "UCXUPKJO5MZQN11PqgIvyuvQ"       # Karpathy's channel ID (stable)
 MAX_VIDEOS = None                              # None = ingest entire channel
 
 

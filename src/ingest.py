@@ -55,21 +55,25 @@ def fetch_transcript(video_id: str) -> Optional[list[dict]]:
     """
     Returns transcript as a list of segments:
     [{"text": "...", "start": 14.32, "duration": 3.1}, ...]
-
-    start = seconds from beginning of video (this becomes chunk_start_time later)
-    Returns None if transcript unavailable (private/disabled).
+    Returns None if transcript unavailable.
     """
     try:
-        transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=["en"])
-        return transcript
-    except TranscriptsDisabled:
-        logger.warning(f"Transcripts disabled for video: {video_id}")
-        return None
-    except NoTranscriptFound:
-        logger.warning(f"No English transcript for video: {video_id}")
-        return None
+        # New API (>=1.0.0): instantiate then call fetch()
+        ytt_api = YouTubeTranscriptApi()
+        fetched = ytt_api.fetch(video_id)
+        
+        # Convert FetchedTranscript object to list of dicts
+        return [
+            {
+                "text": snippet.text,
+                "start": snippet.start,
+                "duration": snippet.duration,
+            }
+            for snippet in fetched
+        ]
+
     except Exception as e:
-        logger.error(f"Unexpected error for video {video_id}: {e}")
+        logger.warning(f"No transcript for video {video_id}: {e}")
         return None
 
 
