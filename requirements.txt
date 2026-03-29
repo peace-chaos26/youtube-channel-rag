@@ -1,0 +1,23 @@
+# Core RAG
+langchain>=0.2
+langchain-openai
+langchain-community
+chromadb
+
+# YouTube ingestion
+youtube-transcript-api
+yt-dlp
+scrapetube
+
+# Hybrid retrieval
+rank-bm25
+
+# Eval
+ragas
+
+# UI
+streamlit
+
+# Utilities
+python-dotenv
+tqdm

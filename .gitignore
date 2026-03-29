@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+env/
+
+# Secrets
+.env
+
+# Data & vector store (too large for git)
+data/transcripts/
+data/chroma_db/
+*.json
+*.parquet
+*.pkl
+
+# Notebooks
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
