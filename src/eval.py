@@ -16,6 +16,9 @@ Why eval matters:
 Usage:
   python src/eval.py
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent))
 
 import json
 import logging
@@ -23,7 +26,7 @@ from pathlib import Path
 from typing import Optional
 
 from langchain_openai import ChatOpenAI
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 
 from config import EVAL_DIR, LLM_MODEL
 from retriever import HybridRetriever
@@ -40,28 +43,28 @@ logger = logging.getLogger(__name__)
 EVAL_QUESTIONS = [
     {
         "question": "What does Karpathy say about the role of attention in transformers?",
-        "expected_video_id": "kCc8FmEb1nY",          # Let's build GPT
+        "expected_video_id": "kCc8FmEb1nY",       # Let's build GPT
         "expected_keywords": ["attention", "query", "key", "value"],
     },
     {
-        "question": "How does Karpathy explain backpropagation through a neural network?",
-        "expected_video_id": "VMj-3S1tku0",          # Neural Networks: Zero to Hero
+        "question": "How does Karpathy explain backpropagation?",
+        "expected_video_id": "VMj-3S1tku0",        # micrograd
         "expected_keywords": ["gradient", "chain rule", "backward", "derivative"],
     },
     {
-        "question": "What is nanoGPT and why did Karpathy build it?",
-        "expected_video_id": "kCc8FmEb1nY",
-        "expected_keywords": ["nanoGPT", "GPT-2", "reproduce", "clean"],
+        "question": "What is the purpose of batch normalization?",
+        "expected_video_id": "P6sfmUTpUmc",        # makemore Part 3
+        "expected_keywords": ["batch", "normalization", "activations", "gradients"],
     },
     {
-        "question": "What does Karpathy think about tokenisation in language models?",
-        "expected_video_id": "zduSFxRajkE",          # Let's build the GPT Tokenizer
+        "question": "How does Karpathy explain tokenization in language models?",
+        "expected_video_id": "zduSFxRajkE",        # GPT Tokenizer
         "expected_keywords": ["token", "BPE", "byte pair", "vocabulary"],
     },
     {
-        "question": "How does Karpathy recommend structuring a neural network training loop?",
-        "expected_video_id": "VMj-3S1tku0",
-        "expected_keywords": ["loss", "optimizer", "forward", "backward", "step"],
+        "question": "What does Karpathy say about training large language models?",
+        "expected_video_id": "l8pRSuU81PU",        # Let's reproduce GPT-2
+        "expected_keywords": ["training", "loss", "optimizer", "GPU"],
     },
 ]
 

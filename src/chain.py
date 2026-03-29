@@ -10,6 +10,9 @@ These are the two query patterns the app exposes:
   - "What does Karpathy say about attention?" → QAChain
   - "Summarise all videos about backpropagation" → SummarizeChain
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent))
 
 import logging
 from typing import Optional

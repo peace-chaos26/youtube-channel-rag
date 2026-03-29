@@ -8,22 +8,25 @@ Two modes selectable by the user:
 
 Run with: streamlit run app.py
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 import streamlit as st
 from dotenv import load_dotenv
 
 load_dotenv()  # load OPENAI_API_KEY from .env
 
-from src.retriever import HybridRetriever
-from src.chain import QAChain, SummarizeChain
-from src.vectorstore import vectorstore_exists
+from retriever import HybridRetriever
+from chain import QAChain, SummarizeChain
+from vectorstore import vectorstore_exists
 
 # ── Page config ───────────────────────────────────────────────────────────────
 
 st.set_page_config(
     page_title="Karpathy Knowledge Base",
     page_icon="🧠",
-    layout="wide",
+    layout="wide",  
 )
 
 # ── Header ────────────────────────────────────────────────────────────────────

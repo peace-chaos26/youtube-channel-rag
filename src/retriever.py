@@ -11,6 +11,10 @@ Why hybrid?
   - Hybrid: best of both worlds, consistently outperforms either alone
 """
 
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent))
+
 import logging
 from pathlib import Path
 from typing import Optional
